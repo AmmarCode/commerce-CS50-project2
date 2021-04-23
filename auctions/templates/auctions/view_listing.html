@@ -1,0 +1,105 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <section class="container">
+        <div class="badge bg-info">
+            <strong style="font-size:x-large;">{{listing.category}}</strong>
+        </div>
+        
+        <div class="title">
+            <h2>
+                {{ listing.title }}
+                {% if watched %}
+                    <a href="{% url 'unwatch' listing.id %}" ><i class="fas fa-star"></i></a>
+                {% else %}
+                    <a href="{% url 'watch' listing.id %}" ><i class="far fa-star"></i></a>
+                {% endif %}
+            </h2>
+            
+        </div>
+
+        <div class="listing_pic">
+            <img src="{{ listing.pic }}" alt="listing pic" style="max-width: 100%;
+            max-height: 100%;">
+        </div>
+        </br>
+
+        <div class="description">
+            {{ listing.description }}
+        </div>
+        </br>
+
+        <div class="details">
+            <h3>Details</h3>
+            <ul>
+                <li>Listed by {{ listing.lister }}</li>
+                <li>{{ listing.date_listed }}</li>                 
+            </ul>
+        </div>
+
+        <div class="messages">
+            {% if message %}
+                {% if updated %}
+                    <div class="alert alert-success" role="alert">
+                        {{ message }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <section class="listings-control">
+            {% if user == listing.lister and listing.active %}
+                <a class="btn btn-warning text-dark" id="cose-auction" href="{% url 'close_listing' listing.id %}" >Close Auction</a>
+            {% endif %}
+            
+            {% if not listing.active and user == listing.current_bid.bidder %}
+            <div class="alert alert-success" role="alert">
+                Congratulations {{ listing.current_bid.bidder }}, You won the auction!
+            </div>
+            {% endif %}
+        </section>
+
+        <div class="price">
+            <strong>Current bid: ${{ listing.current_bid }}</strong>
+        </div>
+
+        <form action="{% url 'place_bid' listing.id %}" method="post">
+            {% csrf_token %}
+            <div class="form-group" style="width: 200px;">
+                <input autofocus class="form-control" type="text" name="bid" placeholder="bid">
+            </div>
+            <button id="bid-button" class="btn btn-primary mb-3" type="submit">Place Bid</button>
+        </form>
+
+        <div class="comments">
+            <h3>Comments</h3>
+            {% if not comments %}
+                <p>No comments</p>
+            {% else %}
+                {% for comment in comments %}
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">{{comment.comment}}</p>
+                    </div>
+                    <div class="card-header">
+                        Posted by {{comment.commenter}}
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <form action="{% url 'comment' listing.id %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <textarea autofocus class="form-control" type="text" name="comment" placeholder="Comment" rows="3"></textarea>
+            </div>
+            <button id="bid-button" class="btn btn-primary mb-3" type="submit">Submit</button>
+        </form>                
+
+    </section>
+{% endblock %}
