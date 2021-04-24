@@ -117,7 +117,6 @@ def create_listing(request):
     return render(request, "auctions/create_listing.html")
 
 
-@login_required
 def view_listing(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     watched = request.user in listing.watchlist.all()
