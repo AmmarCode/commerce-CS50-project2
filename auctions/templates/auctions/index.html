@@ -10,7 +10,6 @@
                 <div class="card-body">
                   <a href="{% url 'view_listing' listing.id %}"><h5 class="card-title" style="margin-top: 10%;">{{ listing.title }}</h5></a>
                   <p class="card-text">Price: <strong>$</strong>{{ listing.current_bid }}</p>
-                  <p class="card-text">{{ listing.description }}</p>
                 </div>
               </div>
             {% endfor %}
